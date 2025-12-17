@@ -10,6 +10,7 @@ import {
   MenuOutlined,
 } from '@ant-design/icons';
 import { type Message, type FileAttachment } from '../hooks/useChat';
+import MarkdownRenderer from './MarkdownRenderer';
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -315,30 +316,39 @@ export default function ChatArea({
                   }}
                 >
                   {message.attachment && renderFileAttachment(message.attachment)}
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      lineHeight: 1.6,
-                      color: theme.textPrimary,
-                      whiteSpace: 'pre-wrap',
-                    }}
-                  >
-                    {message.content}
-                    {message.role === 'assistant' &&
-                      isLoading &&
-                      message.id === messages[messages.length - 1]?.id && (
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            width: 6,
-                            height: 16,
-                            backgroundColor: theme.textPrimary,
-                            marginLeft: 2,
-                            animation: 'blink 1s infinite',
-                          }}
-                        />
-                      )}
-                  </Text>
+                  {message.role === 'assistant' ? (
+                    <div style={{ position: 'relative' }}>
+                      <MarkdownRenderer
+                        content={message.content}
+                        isDarkMode={isDarkMode}
+                      />
+                      {isLoading &&
+                        message.id === messages[messages.length - 1]?.id && (
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              width: 6,
+                              height: 16,
+                              backgroundColor: theme.textPrimary,
+                              marginLeft: 2,
+                              verticalAlign: 'text-bottom',
+                              animation: 'blink 1s infinite',
+                            }}
+                          />
+                        )}
+                    </div>
+                  ) : (
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        lineHeight: 1.6,
+                        color: theme.textPrimary,
+                        whiteSpace: 'pre-wrap',
+                      }}
+                    >
+                      {message.content}
+                    </Text>
+                  )}
                 </div>
               </div>
             ))}
